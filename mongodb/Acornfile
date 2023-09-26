@@ -1,0 +1,23 @@
+args: {
+    persistence: false
+}
+
+containers: {
+  db: {
+    image: "mongo:6.0"
+    ports: publish: "27017/tcp"
+    if args.persistence {
+      dirs: {
+        "/data/db": "volume://db-data"
+      }
+    }
+  }
+}
+
+volumes: {
+  if args.persistence {
+    "db-data": {
+        size: 100Mi
+    }
+  }
+}

@@ -1,0 +1,13 @@
+containers: {
+  redis: {
+    image: "redis:7.2.1"
+    ports: publish: "6379/tcp"
+  }
+  commander: {
+    image: "ghcr.io/joeferner/redis-commander:latest"
+    env: {
+      REDIS_HOSTS: "instance1:redis:6379"
+    }
+    ports: publish: "8081/http"
+  }
+}

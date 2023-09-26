@@ -1,0 +1,43 @@
+args: {
+    persistence: true
+}
+
+containers: {
+  db: {
+    image: "mysql:8.1.0"
+    env: {
+      MYSQL_ROOT_PASSWORD: "secret://password/token"
+    }
+    ports: publish: "3306/tcp"
+    if args.persistence {
+      dirs: {
+        "/var/lib/mysql": "volume://db-data"
+      }
+    }
+  }
+  admin: {
+    image: "adminer"
+    ports: publish: "8080/http"
+  }
+}
+
+volumes: {
+  if args.persistence {
+    "db-data": {
+        size: 100Mi
+    }
+  }
+}
+
+secrets: {
+    "password": {
+        type: "token"
+        params: {
+            length: 16
+            characters: "abcdedfhifj01234567890"
+        }
+        data: {
+            token: ""
+        }
+    }
+}

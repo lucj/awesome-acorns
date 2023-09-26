@@ -1,0 +1,20 @@
+containers: {
+  minecraft: {
+    image: "itzg/minecraft-server"
+    ports: publish: "25565/http"
+
+    env: {
+      EULA: "TRUE"
+    }
+    memory: 2Gi
+      dirs: {
+        "/data": "volume://data"
+    }
+  }
+}
+
+volumes: {
+    "data": {
+        size: 300Mi
+    }
+}

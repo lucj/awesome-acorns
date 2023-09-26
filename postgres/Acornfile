@@ -1,0 +1,56 @@
+args: {
+    persistence: true
+}
+
+containers: {
+  db: {
+    image: "postgres:15.3-alpine3.18"
+    env: {
+      PGDATA: "/var/lib/postgresql/data/db"
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "secret://username/token"
+      POSTGRES_PASSWORD: "secret://password/token"
+    }
+    ports: publish: "5432/tcp"
+    if args.persistence {
+      dirs: {
+        "/var/lib/postgresql/data": "volume://db-data"
+      }
+    }
+  }
+  admin: {
+    image: "adminer"
+    ports: publish: "8080/http"
+  }
+}
+
+volumes: {
+  if args.persistence {
+    "db-data": {
+        size: 100Mi
+    }
+  }
+}
+
+secrets: {
+    "username": {
+        type: "token"
+        params: {
+            length: 16
+            characters: "abcdedfhifj01234567890"
+        }
+        data: {
+            token: ""
+        }
+    }
+    "password": {
+        type: "token"
+        params: {
+            length: 16
+            characters: "abcdedfhifj01234567890"
+        }
+        data: {
+            token: ""
+        }
+    }
+}

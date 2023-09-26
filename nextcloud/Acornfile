@@ -1,0 +1,56 @@
+args: {
+    persistence: true
+}
+
+containers: {
+  nc: {
+    image: "nextcloud:apache"
+    env: {
+      POSTGRES_HOST: "db"
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "secret://db-creds/username"
+      POSTGRES_PASSWORD: "secret://db-creds/password"
+    }
+    ports: publish : "80/http"
+    if args.persistence {
+      dirs: {
+        "/var/www/html": "volume://nc-data"
+      }
+    }
+  }
+  db: {
+    image: "postgres:15.3-alpine3.18"
+    env: {
+      PGDATA: "/var/lib/postgresql/data/db"
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "secret://db-creds/username"
+      POSTGRES_PASSWORD: "secret://db-creds/password"
+    }
+    if args.persistence {
+      dirs: {
+        "/var/lib/postgresql/data": "volume://db-data"
+      }
+    }
+  }
+}
+
+volumes: {
+  if args.persistence {
+    "db-data": {
+        size: 100Mi
+    }
+    "nc-data": {
+        size: 100Mi
+    }
+  }
+}
+
+secrets: {
+    "db-creds": {
+        type: "basic"
+        data: {
+            username: "postgres"
+            password: "postgres"
+        }
+    }
+}
