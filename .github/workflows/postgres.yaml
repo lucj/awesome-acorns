@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'postgres/Acornfile'
+      - '.github/workflows/postgres.yaml'
 
 jobs:
   publish:
@@ -25,4 +26,5 @@ jobs:
       - name: Build and Publish with signature
         run: |
           TAG=${GITHUB_REF#refs/*/}
+          cd postgres
           acorn build --platform linux/amd64 --platform linux/arm64 --push -t ghcr.io/lucj/postgres:${TAG} .
