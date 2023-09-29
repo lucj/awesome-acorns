@@ -2,7 +2,6 @@ name:        "Postgres Acorn"
 description: "Acorn providing Postgres"
 readme:      "./README.md"
 icon:        "./images/icon.png"
-
 info: localData.info
 
 args: {
