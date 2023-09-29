@@ -9,8 +9,8 @@ args: {
   // Name of the default database
   dbName: "postgres"
 
-  // Enable persitence if needed
-  persistence: false
+  // Name of the default user
+  dbUser: ""
 }
 
 services: db: {
@@ -33,10 +33,8 @@ containers: {
       POSTGRES_USER: "secret://username/token"
       POSTGRES_PASSWORD: "secret://password/token"
     }
-    if args.persistence {
-      dirs: {
-        "/var/lib/postgresql/data": "volume://db-data"
-      }
+    dirs: {
+      "/var/lib/postgresql/data": "volume://db-data"
     }
     probes: [
       {
@@ -54,11 +52,7 @@ containers: {
 }
 
 volumes: {
-  if args.persistence {
-    "db-data": {
-        size: 100Mi
-    }
-  }
+  "db-data": {}
 }
 
 secrets: {
@@ -66,7 +60,7 @@ secrets: {
         type: "token"
         params: {
             length: 16
-            characters: "abcdedfhifj01234567890"
+            characters: "abcdefghij1234567890"
         }
         data: token: ""
     }
@@ -74,7 +68,7 @@ secrets: {
         type: "token"
         params: {
             length: 16
-            characters: "abcdedfhifj01234567890"
+            characters: "abcdefghij1234567890"
         }
         data: token: ""
     }
